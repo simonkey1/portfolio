@@ -1,5 +1,5 @@
 import streamlit as st
-import main  # Importa tu archivo de scraping como módulo
+import scraping  # Importa el archivo de scraping como módulo
 
 # Título de la Landing Page
 st.title("Mi Portfolio de Proyectos")
@@ -11,11 +11,10 @@ menu = st.sidebar.selectbox(
     ["Inicio", "Scraping Web"]
 )
 
-# Navegación basada en la selección
+# Navegación basada en la selección del usuario
 if menu == "Inicio":
     st.header("Inicio")
-    st.markdown("Esta es la página principal de mi portfolio.")
+    st.markdown("Esta es la página principal de mi portfolio, donde encontrarás una descripción general de mis proyectos.")
 elif menu == "Scraping Web":
     st.header("Scraping Web")
-    # Llama al código del archivo main.py
-    main.run_scraping()
+    scraping.run_scraping()  # Llama a la función de scraping definida en scraping.py
