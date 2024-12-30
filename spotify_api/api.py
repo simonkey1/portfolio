@@ -1,16 +1,14 @@
- 
-# spotify_api/api.py
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 
-# Configuración de la API
+# Conexión a la API de Spotify
 def connect_to_spotify(client_id, client_secret):
     return spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id=client_id,
         client_secret=client_secret
     ))
 
-# Ejemplo: buscar información de un artista
+# Obtener información de un artista
 def get_artist_info(sp, artist_name):
     results = sp.search(q=artist_name, type="artist", limit=1)
     if results['artists']['items']:
@@ -19,30 +17,29 @@ def get_artist_info(sp, artist_name):
             'name': artist['name'],
             'genres': artist['genres'],
             'followers': artist['followers']['total'],
-            'popularity': artist['popularity']
+            'popularity': artist['popularity'],
+            'id': artist['id']  # Incluye el ID para obtener álbumes
         }
     return None
 
-def get_track_features(sp, track_name):
-    try:
-        # Busca la canción por nombre
-        results = sp.search(q=track_name, type="track", limit=1)
-        if not results['tracks']['items']:
-            return None  # Canción no encontrada
+# Obtener álbumes de un artista
+def get_artist_albums(sp, artist_id):
+    albums = sp.artist_albums(artist_id, limit=10)['items']
+    return [{'name': album['name'], 'id': album['id']} for album in albums]
 
-        # Obtiene el ID de la canción
-        track_id = results['tracks']['items'][0]['id']
+# Obtener canciones de un álbum
+def get_album_tracks(sp, album_id):
+    tracks = sp.album_tracks(album_id)['items']
+    return [{'name': track['name'], 'id': track['id']} for track in tracks]
 
-        # Recupera las características de la canción
-        features = sp.audio_features(track_id)
-        if features and features[0]:
-            return {
-                'danceability': features[0]['danceability'],
-                'energy': features[0]['energy'],
-                'tempo': features[0]['tempo'],
-                'valence': features[0]['valence']
-            }
-        return None  # Si no hay características disponibles
-    except spotipy.exceptions.SpotifyException as e:
-        print(f"Error al obtener características de la canción: {e}")
-        return None
+# Obtener características de una canción
+def get_track_features(sp, track_id):
+    features = sp.audio_features(track_id)[0]
+    if features:
+        return {
+            'danceability': features['danceability'],
+            'energy': features['energy'],
+            'tempo': features['tempo'],
+            'valence': features['valence']
+        }
+    return None
