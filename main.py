@@ -1,6 +1,4 @@
 import streamlit as st
-import scraping  # Importa el archivo de scraping como módulo
-from chart import create_trend_chart  # Importa la función para el gráfico
 
 # Título de la Landing Page
 st.title("Simón Gómez | Sociólogo y Data Scientist")
