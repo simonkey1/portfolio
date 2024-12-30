@@ -1,5 +1,6 @@
 import streamlit as st
 import scraping  # Importa el archivo de scraping como módulo
+from chart import create_trend_chart  # Importa la función para el gráfico
 
 # Título de la Landing Page
 st.title("Simón Gómez | Sociólogo y Data Scientist")
@@ -15,13 +16,23 @@ st.button("Proyectos")
 # Menú de navegación
 menu = st.sidebar.selectbox(
     "Navegación",
-    ["Inicio", "Scraping Web"]
+    ["Inicio", "Scraping Web", "Análisis de Datos"]
 )
 
 # Navegación basada en la selección del usuario
 if menu == "Inicio":
     st.header("Inicio")
     st.markdown("Esta es la página principal de mi portfolio, donde encontrarás una descripción general de mis proyectos.")
+
 elif menu == "Scraping Web":
     st.header("Scraping Web")
-    scraping.run_scraping()  # Llama a la función de scraping definida en scraping.py
+    scraping.run_scraping()
+
+elif menu == "Análisis de Datos":
+    st.header("Análisis de Datos")
+    st.markdown("Explora tendencias y análisis interactivos.")
+    
+    # Mostrar gráfico de tendencias
+    st.subheader("Tendencias de Minutos Escuchados por Mes")
+    fig = create_trend_chart()
+    st.plotly_chart(fig, use_container_width=True)
