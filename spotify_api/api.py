@@ -24,14 +24,25 @@ def get_artist_info(sp, artist_name):
     return None
 
 def get_track_features(sp, track_name):
-    results = sp.search(q=track_name, type="track", limit=1)
-    if results['tracks']['items']:
+    try:
+        # Busca la canción por nombre
+        results = sp.search(q=track_name, type="track", limit=1)
+        if not results['tracks']['items']:
+            return None  # Canción no encontrada
+
+        # Obtiene el ID de la canción
         track_id = results['tracks']['items'][0]['id']
-        features = sp.audio_features(track_id)[0]
-        return {
-            'danceability': features['danceability'],
-            'energy': features['energy'],
-            'tempo': features['tempo'],
-            'valence': features['valence']
-        }
-    return None
+
+        # Recupera las características de la canción
+        features = sp.audio_features(track_id)
+        if features and features[0]:
+            return {
+                'danceability': features[0]['danceability'],
+                'energy': features[0]['energy'],
+                'tempo': features[0]['tempo'],
+                'valence': features[0]['valence']
+            }
+        return None  # Si no hay características disponibles
+    except spotipy.exceptions.SpotifyException as e:
+        print(f"Error al obtener características de la canción: {e}")
+        return None
