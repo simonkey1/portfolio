@@ -1,6 +1,7 @@
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 
+
 # Conectar a la API de Spotify
 def connect_to_spotify(client_id, client_secret):
     """
@@ -16,7 +17,7 @@ def connect_to_spotify(client_id, client_secret):
     return spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id=client_id,
         client_secret=client_secret
-    ))
+    )) 
 
 # Obtener características de una canción
 def get_track_features(sp, track_id):

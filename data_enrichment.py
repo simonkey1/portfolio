@@ -16,7 +16,7 @@ sp = connect_to_spotify(CLIENT_ID, CLIENT_SECRET)
 df_historico = pd.read_csv("df_final.csv")
 
 # Filtrar filas válidas
-
+df_historico = df_historico[df_historico['spotify_track_uri'].notnull()]
 
 # Crear nuevas columnas para datos enriquecidos
 df_historico['artist_genres'] = None
@@ -27,18 +27,16 @@ df_historico['track_energy'] = None
 df_historico['track_tempo'] = None
 df_historico['track_valence'] = None
 
-        # Obtener características de la canción usando el URI
-        # track_features = get_track_features(sp, row['spotify_track_uri'])
-        # if track_features:
-        #     df_historico.at[index, 'track_danceability'] = track_features['danceability']
-        #     df_historico.at[index, 'track_energy'] = track_features['energy']
-        #     df_historico.at[index, 'track_tempo'] = track_features['tempo']
-        #     df_historico.at[index, 'track_valence'] = track_features['valence']
-
-
 # Iterar sobre las filas para enriquecer los datos
 for index, row in df_historico.iterrows():
     try:
+        # Obtener características de la canción usando el URI
+        track_features = get_track_features(sp, row['spotify_track_uri'])
+        if track_features:
+            df_historico.at[index, 'track_danceability'] = track_features['danceability']
+            df_historico.at[index, 'track_energy'] = track_features['energy']
+            df_historico.at[index, 'track_tempo'] = track_features['tempo']
+            df_historico.at[index, 'track_valence'] = track_features['valence']
 
         # Obtener información del artista
         artist_info = get_artist_info(sp, row['master_metadata_album_artist_name'])
