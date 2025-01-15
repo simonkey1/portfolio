@@ -5,7 +5,6 @@ def prepare_data(filepath):
     """
     Prepara los datos cargando y filtrando según el rango de fechas y formato.
     """
-<<<<<<< HEAD
     # Cargar los datos desde el archivo
     df_final = pd.read_csv(filepath)
 
@@ -30,26 +29,11 @@ def prepare_data(filepath):
     fecha_fin = pd.Timestamp("2024-12-29")
 
     # Filtrar el DataFrame dentro del rango de fechas
-=======
-    df_final = pd.read_csv(filepath)
-
-    if 'master_metadata_album_artist_name' in df_final.columns:
-        df_final = df_final.rename(columns={'master_metadata_album_artist_name': 'artist'})
-
-    df_final['date'] = pd.to_datetime(df_final['ts'])
-    df_final['year'] = df_final['date'].dt.year
-    df_final['date'] = df_final['date'].dt.tz_localize(None)
-    df_final['min_played'] = df_final['ms_played'] / 60000
-
-    fecha_inicio = pd.Timestamp("2017-01-01")
-    fecha_fin = pd.Timestamp("2024-12-29")
->>>>>>> 512b313 (avances playa)
     df_filtrado = df_final[(df_final['date'] >= fecha_inicio) & (df_final['date'] <= fecha_fin)]
 
     return df_filtrado
 
 def get_consistent_artists_with_playtime(df, top_n=3):
-<<<<<<< HEAD
     """
     Filtra los artistas más consistentes con años activos = 8 y selecciona el top N basado en minutos reproducidos.
     """
@@ -68,21 +52,10 @@ def get_consistent_artists_with_playtime(df, top_n=3):
     consistent_artists = consistent_artists.merge(artist_playtime, on='artist')
 
     # Ordenar por minutos reproducidos y tomar el top N
-=======
-    artist_years = df.groupby('artist')['year'].nunique().reset_index()
-    artist_years = artist_years.rename(columns={'year': 'years_active'})
-    consistent_artists = artist_years[artist_years['years_active'] == 8]
-
-    artist_playtime = df.groupby('artist')['min_played'].sum().reset_index()
-    artist_playtime = artist_playtime.rename(columns={'min_played': 'total_min_played'})
-
-    consistent_artists = consistent_artists.merge(artist_playtime, on='artist')
->>>>>>> 512b313 (avances playa)
     top_artists = consistent_artists.sort_values(by='total_min_played', ascending=False).head(top_n)
 
     return top_artists
 
-<<<<<<< HEAD
 def create_consistency_chart(filepath, top_artists):
     """
     Crea un gráfico de consistencia para los artistas más destacados.
@@ -97,13 +70,6 @@ def create_consistency_chart(filepath, top_artists):
     filtered_data = artist_year_data[artist_year_data['artist'].isin(top_artists)]
 
     # Crear el gráfico interactivo
-=======
-def create_consistency_chart(filepath, top_artists, save_as_image=False, filename="consistency_chart.png"):
-    df_filtrado = prepare_data(filepath)
-    artist_year_data = df_filtrado.groupby(['artist', 'year'])['min_played'].sum().reset_index()
-    filtered_data = artist_year_data[artist_year_data['artist'].isin(top_artists)]
-
->>>>>>> 512b313 (avances playa)
     fig = px.line(
         filtered_data,
         x='year',
@@ -114,10 +80,7 @@ def create_consistency_chart(filepath, top_artists, save_as_image=False, filenam
         markers=True
     )
 
-<<<<<<< HEAD
     # Personalizar el gráfico
-=======
->>>>>>> 512b313 (avances playa)
     fig.update_layout(
         title={
             'text': 'Top 3 Artistas Más Consistentes por Minutos Reproducidos',
@@ -138,24 +101,61 @@ def create_consistency_chart(filepath, top_artists, save_as_image=False, filenam
             x=0.5,
             xanchor='center',
             orientation='h'
-<<<<<<< HEAD
         )
     )
 
     return fig
 
-=======
-        ),
-        width=800,
-        height=800
+def create_consistency_animation(filepath, top_artists):
+    """
+    Crea una animación para mostrar la evolución de los minutos reproducidos por los artistas más destacados.
+    """
+    # Prepara los datos
+    df_filtrado = prepare_data(filepath)
+
+    # Obtener el número de apariciones de cada artista por año
+    artist_year_data = df_filtrado.groupby(['artist', 'year'])['min_played'].sum().reset_index()
+
+    # Filtrar los datos para incluir solo los artistas destacados
+    filtered_data = artist_year_data[artist_year_data['artist'].isin(top_artists)]
+
+    # Crear la animación interactiva
+    fig = px.bar(
+        filtered_data,
+        x='artist',
+        y='min_played',
+        color='artist',
+        animation_frame='year',
+        title='Evolución de Minutos Reproducidos por Año',
+        labels={'artist': 'Artista', 'min_played': 'Minutos Reproducidos', 'year': 'Año'},
+        height=600
     )
 
-    if save_as_image:
-        import kaleido
-        fig.write_image(filename, width=800, height=800)
+    # Personalizar el gráfico
+    fig.update_layout(
+        title={
+            'text': 'Evolución de Minutos Reproducidos por Año',
+            'x': 0.5,
+            'xanchor': 'center'
+        },
+        xaxis=dict(
+            title='Artista',
+            title_font=dict(size=14, color='lightskyblue'),
+            tickfont=dict(size=12, color='lightskyblue')
+        ),
+        yaxis=dict(
+            title='Minutos Reproducidos',
+            title_font=dict(size=14, color='lightskyblue'),
+            tickfont=dict(size=12, color='lightskyblue')
+        ),
+        legend=dict(
+            x=0.5,
+            xanchor='center',
+            orientation='h'
+        )
+    )
 
     return fig
->>>>>>> 512b313 (avances playa)
 
 def get_total_playtime_in_days(df):
     """
@@ -169,7 +169,6 @@ def get_total_playtime_in_days(df):
     total_days = total_minutes / (24 * 60)
     
     return round(total_days, 2)
-<<<<<<< HEAD
 
 def create_bts_playtime_chart(filepath):
     """
@@ -217,7 +216,6 @@ def create_bts_playtime_chart(filepath):
 
     return fig
 
-
 def get_bts_playtime_in_days(filepath):
     """
     Calcula la suma total de minutos reproducidos por BTS
@@ -236,5 +234,3 @@ def get_bts_playtime_in_days(filepath):
     total_days = total_minutes / (24 * 60)
 
     return round(total_days, 2)
-=======
->>>>>>> 512b313 (avances playa)
