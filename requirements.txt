@@ -4,4 +4,10 @@ requests
 beautifulsoup4
 matplotlib
 plotly
+<<<<<<< HEAD
 spotipy
+=======
+spotipy
+kaleido
+pillow
+>>>>>>> 512b313 (avances playa)

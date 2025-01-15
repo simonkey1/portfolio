@@ -1,7 +1,11 @@
 import pandas as pd
 import plotly.express as px
 
+<<<<<<< HEAD
 def create_trend_chart():
+=======
+def create_trend_chart(save_as_image=False, filename="trend_chart.png"):
+>>>>>>> 512b313 (avances playa)
     # Carga de datos reales (reemplaza con la ruta de tu archivo)
     df_final = pd.read_csv("df_final.csv")  # Cambia esto a tu fuente de datos
 
@@ -23,7 +27,10 @@ def create_trend_chart():
 
     # Extrae mes y año para agrupar
     df_filtrado['month'] = df_filtrado['date'].dt.month
+<<<<<<< HEAD
 
+=======
+>>>>>>> 512b313 (avances playa)
     df_filtrado['min_played'] = df_filtrado['ms_played'] / 60000
 
     # Agrupar los datos por año y mes
@@ -65,6 +72,7 @@ def create_trend_chart():
             tickmode='array',
             tickvals=list(range(1, 13)),
             ticktext=['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+<<<<<<< HEAD
             title_font=dict(size=14, color='deepskyblue'),  # Títulos del eje X más brillantes
             tickfont=dict(size=12, color='deepskyblue')  # Etiquetas del eje X más brillantes
         ),
@@ -75,10 +83,32 @@ def create_trend_chart():
         legend_title={
             'text': 'Año'
         },
+=======
+            title_font=dict(size=14, color='lightskyblue'),  # Títulos del eje X más brillantes
+            tickfont=dict(size=12, color='lightskyblue')  # Etiquetas del eje X más brillantes
+        ),
+        yaxis=dict(
+            title_font=dict(size=14, color='lightskyblue'),  # Títulos del eje Y más brillantes
+            tickfont=dict(size=12, color='lightskyblue')  # Etiquetas del eje Y más brillantes
+        ),
+>>>>>>> 512b313 (avances playa)
         legend=dict(
             x=0.5,  # Centrar la leyenda horizontalmente
             xanchor='center',
             orientation='h'
+<<<<<<< HEAD
         )
     )
+=======
+        ),
+        width=800,  # Ancho del gráfico para mejor visualización
+        height=800  # Alto del gráfico
+    )
+
+    # Guardar el gráfico como imagen si se especifica
+    if save_as_image:
+        import kaleido
+        fig.write_image(filename, width=800, height=800)
+
+>>>>>>> 512b313 (avances playa)
     return fig

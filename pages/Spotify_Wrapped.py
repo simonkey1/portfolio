@@ -18,6 +18,14 @@ como aumentos en verano y bajadas en invierno. ¿Se reflejan tus momentos favori
 fig = create_trend_chart()
 st.plotly_chart(fig, use_container_width=True)
 
+<<<<<<< HEAD
+=======
+# Botón para descargar el gráfico como imagen
+if st.button("Descargar gráfico como imagen"):
+    create_trend_chart(save_as_image=True, filename="trend_chart_download.png")
+    st.markdown("✅ **Gráfico descargado como `trend_chart_download.png`.**")
+
+>>>>>>> 512b313 (avances playa)
 # Pie de página inspirador
 st.markdown("""
 **🎯 Nota:** La música tiene el poder de marcar nuestras vidas. Reflexiona sobre tus momentos
