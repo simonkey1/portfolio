@@ -15,8 +15,9 @@ def prepare_data(filepath):
     # Convertir 'ts' en formato datetime
     df_final['date'] = pd.to_datetime(df_final['ts'])
 
-    # Extraer el año
+    # Extraer el año y el mes
     df_final['year'] = df_final['date'].dt.year
+    df_final['month'] = df_final['date'].dt.month
 
     # Eliminar zona horaria de 'date'
     df_final['date'] = df_final['date'].dt.tz_localize(None)
@@ -59,9 +60,10 @@ def get_consistent_artists_with_playtime_excluding_bts(df, top_n=15):
 
     return top_artists
 
-def create_consistency_chart_no_bts(filepath, top_artists):
+def create_bar_chart_animation(filepath, top_artists):
     """
-    Crea un gráfico de consistencia para los artistas más destacados excluyendo a BTS.
+    Crea un gráfico de líneas que muestre la evolución de minutos reproducidos
+    por los artistas más destacados a lo largo de los años, excluyendo a BTS.
     """
     # Prepara los datos
     df_filtrado = prepare_data(filepath)
@@ -78,93 +80,102 @@ def create_consistency_chart_no_bts(filepath, top_artists):
         x='year',
         y='min_played',
         color='artist',
-        title='Consistencia de Artistas Destacados (Excluyendo BTS)',
+        title='Evolución Anual de Minutos Reproducidos por Artista (Excluyendo BTS)',
         labels={'year': 'Año', 'min_played': 'Minutos Reproducidos', 'artist': 'Artista'},
         markers=True
-    )
-
-    return fig
-def create_consistency_animation_no_bts_monthly(filepath, top_artists):
-    """
-    Crea una animación mensual para mostrar la evolución acumulada de los minutos reproducidos
-    por los artistas más destacados, excluyendo a BTS.
-    """
-    import random
-
-    # Prepara los datos
-    df_filtrado = prepare_data(filepath)
-
-    # Agregar columna de mes-año para agrupación
-    df_filtrado['month_year'] = df_filtrado['date'].dt.to_period('M').astype(str)
-
-    # Obtener los minutos reproducidos por artista por mes
-    artist_monthly_data = df_filtrado.groupby(['artist', 'month_year'])['min_played'].sum().reset_index()
-
-    # Convertir los datos a acumulativos mes a mes
-    artist_monthly_data['cumulative_min_played'] = artist_monthly_data.groupby('artist')['min_played'].cumsum()
-
-    # Redondear los minutos acumulados a números enteros
-    artist_monthly_data['cumulative_min_played'] = artist_monthly_data['cumulative_min_played'].round(0)
-
-    # Filtrar los datos para incluir solo los artistas destacados
-    filtered_data = artist_monthly_data[artist_monthly_data['artist'].isin(top_artists)]
-
-    # Calcular los minutos acumulados por artista para ordenar las leyendas
-    cumulative_minutes = filtered_data.groupby('artist')['cumulative_min_played'].max().reset_index()
-    cumulative_minutes = cumulative_minutes.sort_values(by='cumulative_min_played', ascending=False)
-
-    # Ordenar artistas por el acumulado total
-    artist_order = cumulative_minutes['artist'].tolist()
-    filtered_data['artist'] = pd.Categorical(filtered_data['artist'], categories=artist_order, ordered=True)
-
-    # Generar una paleta de colores dinámica
-    color_palette = [
-        f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(len(artist_order))
-    ]
-    color_mapping = {artist: color_palette[i % len(color_palette)] for i, artist in enumerate(artist_order)}
-
-    # Crear la animación interactiva
-    fig = px.bar(
-        filtered_data,
-        y='artist',  # Hacer el gráfico horizontal
-        x='cumulative_min_played',
-        color='artist',
-        animation_frame='month_year',
-        title='Evolución Acumulada de Minutos Reproducidos (Mensual, Excluyendo BTS)',
-        labels={'artist': 'Artista', 'cumulative_min_played': 'Minutos Reproducidos Acumulados', 'month_year': 'Mes'},
-        height=800,
-        color_discrete_map=color_mapping  # Aplicar el mapa de colores personalizado
     )
 
     # Personalizar el gráfico
     fig.update_layout(
         title={
-            'text': 'Evolución Acumulada de Minutos Reproducidos (Mensual, Excluyendo BTS)',
+            'text': 'Evolución Anual de Minutos Reproducidos por Artista (Excluyendo BTS)',
             'x': 0.5,
             'xanchor': 'center'
         },
         xaxis=dict(
-            title='Minutos Reproducidos Acumulados',
+            title='Año',
             title_font=dict(size=14, color='lightskyblue'),
             tickfont=dict(size=12, color='lightskyblue')
         ),
         yaxis=dict(
-            title='Artista',
+            title='Minutos Reproducidos',
             title_font=dict(size=14, color='lightskyblue'),
             tickfont=dict(size=12, color='lightskyblue')
         ),
         legend=dict(
             title='Artista',
-            traceorder='normal'  # Respeta el orden de categorías configurado
+            traceorder='normal'
         )
     )
-
-    # Ajustar el rango de la animación para detenerse en el último mes
-    last_month = filtered_data['month_year'].max()
-    fig.frames = [frame for frame in fig.frames if frame.name <= last_month]
 
     return fig
 
 
+def create_consistency_chart_no_bts(filepath, top_artists):
+    """
+    Crea un gráfico de líneas animado que muestre la evolución de minutos reproducidos
+    por los artistas más destacados a lo largo de los años, excluyendo a BTS.
+    """
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
 
+    # Prepara los datos
+    df_filtrado = prepare_data(filepath)
 
+    # Obtener el número de apariciones de cada artista por año
+    artist_year_data = df_filtrado.groupby(['artist', 'year'])['min_played'].sum().reset_index()
+
+    # Asegurarse de que el año sea un entero
+    artist_year_data['year'] = artist_year_data['year'].astype(int)
+
+    # Filtrar los datos para incluir solo los artistas destacados
+    filtered_data = artist_year_data[artist_year_data['artist'].isin(top_artists)]
+
+    # Generar nueva estructura de datos para la animación con un slider
+    unique_years = sorted(filtered_data['year'].unique())
+    df = pd.DataFrame()
+    for year in unique_years:
+        partial_data = filtered_data[filtered_data['year'] <= year].copy()
+        partial_data['animation_year'] = year
+        df = pd.concat([df, partial_data])
+
+    # Crear el gráfico interactivo con animación usando slider
+    fig = px.line(
+        df,
+        x='year',
+        y='min_played',
+        color='artist',
+        title='Evolución Anual de Minutos Reproducidos por Artista (Excluyendo BTS)',
+        labels={'year': 'Año', 'min_played': 'Minutos Reproducidos', 'artist': 'Artista'},
+        animation_frame='animation_year',
+        line_group='artist'
+    )
+
+    # Personalizar el gráfico
+    fig.update_layout(
+        title={
+            'text': 'Evolución Anual de Minutos Reproducidos por Artista (Excluyendo BTS)',
+            'x': 0.5,
+            'xanchor': 'center'
+        },
+        xaxis=dict(
+            title='Año',
+            title_font=dict(size=14, color='lightskyblue'),
+            tickfont=dict(size=12, color='lightskyblue'),
+            tickmode='linear',  # Asegura ticks lineales en el eje x
+            tick0=2017,  # Inicio de los ticks
+            dtick=1  # Intervalo de un año
+        ),
+        yaxis=dict(
+            title='Minutos Reproducidos',
+            title_font=dict(size=14, color='lightskyblue'),
+            tickfont=dict(size=12, color='lightskyblue')
+        ),
+        legend=dict(
+            title='Artista',
+            traceorder='normal'
+        )
+    )
+
+    return fig

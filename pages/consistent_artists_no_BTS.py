@@ -4,8 +4,9 @@ from consistent_artists_no_BTS import (
     prepare_data,
     get_consistent_artists_with_playtime_excluding_bts,
     create_consistency_chart_no_bts,
-    create_consistency_animation_no_bts_monthly
+    create_bar_chart_animation
 )
+
 
 # Título y descripción de la página
 st.title("🎶 Consistencia de Artistas (Excluyendo BTS)")
@@ -29,7 +30,7 @@ try:
 
     # Animación
     st.subheader("🎥 Animación de Tendencias")
-    animation_fig = create_consistency_animation_no_bts_monthly(data_filepath, top_artists)
+    animation_fig = create_bar_chart_animation(data_filepath, top_artists)
     st.plotly_chart(animation_fig, use_container_width=True)
 
     # Tabla con los artistas destacados
