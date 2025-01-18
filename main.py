@@ -43,9 +43,7 @@ add_background_gradient()
 # Título principal
 st.title("🎵 Spotify Wrapped: Análisis Longitudinal de Datos")
 st.markdown("""
-Este proyecto tiene como objetivo analizar las tendencias musicales de un período extenso, desde 2017 hasta 2024. 
-Basándonos en datos proporcionados por una usuaria de 23 años, originaria de Chile, hemos desarrollado visualizaciones que 
-destacan patrones únicos en su consumo musical.
+Todos los años desde 2015 Spotify Wrapped nos permite ver nuestros datos de escucha. Pero hay ocasiones donde no nos sentimos tan identificados con sus resultados. El año pasado, una amiga me comentó que no estaba satisfecha son su Spotify Wrapped, que no sentía que reflejara sus gustos musicales. Así que me embarqué en la idea de hacer mi propio Spotify Wrapped, ¿la diferencia? !Con datos de más de 8 años!. Quise observar sus patrones de escucha de manera más holgada que un Spotify Wrapped anual. El siguiente análisis es el resultado de mi experimento.
 """)
 
 # Ruta al archivo de datos
@@ -56,27 +54,36 @@ try:
     df = prepare_data(data_filepath)
     track_data = prepare_track_data(data_filepath)
 
-    # Sección: Minutos Totales por Año
-    st.header("📊 Minutos Totales por Año")
-    st.markdown("""
-    Este gráfico muestra cómo evolucionó el tiempo total escuchado por año. 
-    Observamos un pico notable en 2020, coincidiendo con el inicio de la pandemia.
-    """)
-    fig = create_trend_chart()
-    st.plotly_chart(fig, use_container_width=True)
 
-    # Sección: Top 3 Artistas Consistentes
-    st.header("🎤 Top 3 Artistas Más Consistentes")
-    st.markdown("""
-    Aquí se destacan los tres artistas más reproducidos consistentemente cada año entre 2017 y 2024. 
-    BTS, Bad Bunny y Justin Bieber lideran la lista.
-    """)
+
+    # Sección: Minutos Totales por Año
+
     total_days = get_total_playtime_in_days(df)
     st.metric(label="🎧 Total de Días de Reproducción", value=f"{total_days} días")
     top_artists_df = get_consistent_artists_with_playtime(df, top_n=3)
     top_artists = top_artists_df['artist'].tolist()
+    
+
+    st.header("📊 Minutos Totales por Año")
+    st.markdown("""
+    Primero empecé con sus minutos escuchados por años, con resultados muy interesantes. El marzo de 2020, se inició la pandemia, un proceso que afectó los hábitos de escucha de música de muchas personas, incluyendo a mi amiga. Notamos que tuvo un pico impresionante de minutos al día durante marzo. Sin embargo, luego vemos un declive en los meses siguientes, ocasionando que en septiembre del mismo año se escuche menos música que en 2019. Ante esto, le pregunté a mi amiga si había notado este cambio, a lo que respondió que sí, que en efecto, utilizó muchísimo Spotify al inicio de la pandemia, pero a medida que avanzaron los meses, optó por escuchar lofi en Youtube para dedicarse principalmente al estudio, lo cual se refleja en la gráfica.
+    """)
+    fig = create_trend_chart()
+    st.plotly_chart(fig, use_container_width=True)
+
+  
+
+    # Sección: Top 3 Artistas Consistentes
+    st.header("🎤 Top 3 Artistas Más Consistentes")
+    st.markdown("""
+    Normalmente Spotify te proporciona tu artista destacado del año, indicando sus minutos totales y tu posición respecto a otros oyentes. Para el pasado 2024, Spotify señaló que Mora fue su artista más destacado, sumando 9288 minutos. Ahondando en la idea de que no se sentía identificada con los resultados de Spotify Wrapped, le pregunté si Mora era su artista favorito, a lo que respondió que no, que le gustaba mucho, pero que no era su favorito. Por lo que decidí hacer un análisis más profundo de sus artistas más escuchados, añadiendo los minutos de todos los años desde 2017. Encontré que sus artistas más consistentes son: BTS, Bad Bunny y Justin Bieber. Así que lo siento Mora, destacaste bastante este año, pero la consistencia te delata que quizás eres sólo una temporada en la vida de mi amiga.
+                
+    En cuanto a mi propio ranking, podemos observar que BTS arrasa, opacando enormemente los datos de Justin Bieber y Bad Bunny. Entre todos los años, 2020 fue definitvamente de BTS, registrando casi 25 mil minutos de reproducción!, seguido de Bad Bunny con "solo" 2300 minutos y Justin Bieber con 905 minutos. Pero, ¿Por qué BTS? Mi amiga es fanática antes de llegar a estos números. consulté con mi amiga y nos cuenta que precisamente ese año se estrenó el álbum "Map of the Soul: 7", el cual fue considerado el más escuchado en la historia de Corea del Sur y su sencillo 'Dynamite' encabezando el ranking de Billboard por 3 semanas consecutivas,!Impresionante!
+    """)
+
     fig = create_consistency_chart(data_filepath, top_artists)
     st.plotly_chart(fig, use_container_width=True)
+
 
     # Sección: Top 15 Excluyendo BTS
     st.header("🎶 Top 15 Artistas Excluyendo BTS")
