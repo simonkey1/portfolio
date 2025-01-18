@@ -1,14 +1,7 @@
 import streamlit as st
 from pages.Spotify_Wrapped.spotify_wrapped_config import render_spotify_wrapped
-from pages.dark_metrics import render_page
-import sys
-import os
 
-# Agregar el directorio raíz del proyecto al PYTHONPATH
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-
-# Sidebar
+# Configuración de la barra lateral
 st.sidebar.title("📂 Selecciona la Sección")
 section = st.sidebar.radio(
     "Explorar",
@@ -23,7 +16,3 @@ if section == "Home":
     """)
 elif section == "Spotify Wrapped":
     render_spotify_wrapped()
-elif section == "Dark Metrics":
- render_page()
-
-print("PYTHONPATH:", sys.path)
