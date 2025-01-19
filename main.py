@@ -128,19 +128,50 @@ try:
     search_query = st.text_input("Busca un Artista", value=default_artist)  # Valor inicial como "Mora"
     artists = sorted(track_data['artist'].dropna().unique())
     filtered_artists = [a for a in artists if search_query.lower() in a.lower()]
-    artist_index = 0 if default_artist in filtered_artists else None  # Seleccionar Mora si está en la lista
+
+    # Buscar el índice del artista predeterminado (Mora) en la lista filtrada
+    if default_artist in filtered_artists:
+        artist_index = filtered_artists.index(default_artist)  # Obtener índice de Mora
+    else:
+        artist_index = 0  # Seleccionar el primer valor si Mora no está
+
+    # Mostrar el selectbox con el artista predeterminado seleccionado
     artist = st.selectbox("Selecciona el Artista", filtered_artists, index=artist_index)
 
     # Selección de año
     years = sorted(track_data['year'].unique())
-    year_index = years.index(default_year) if default_year in years else 0  # Seleccionar 2023 si está disponible
+    if default_year in years:
+        year_index = years.index(default_year)  # Seleccionar 2023 si está disponible
+    else:
+        year_index = 0  # Seleccionar el primer año si 2023 no está
+
     year = st.selectbox("Selecciona el Año", years, index=year_index)
 
     # Generar gráfico si hay artista y año seleccionados
     if artist and year:
         st.markdown(f"### Top 5 Canciones de {artist} en {year}")
-    fig = create_track_chart(data_filepath, year, artist)
-    st.plotly_chart(fig, use_container_width=True)
+        fig = create_track_chart(data_filepath, year, artist)
+        st.plotly_chart(fig, use_container_width=True)
+
+
+
+    # Sección 6: conclusiones
+
+    st.header("Conclusiones")
+    st.markdown(""" Este proyecto de Spotify Wrapped personalizado nos permite observar cómo las tendencias musicales y los hábitos de escucha evolucionan con el tiempo. Aunque no tiene la intención de superar el Spotify Wrapped original, sí busca añadir una nueva arista a la conversación. Al extender el análisis a más de 8 años, enriquecemos la narrativa y obtenemos un panorama más amplio y profundo de los datos de escucha.
+
+    Puntos destacados del análisis:
+
+    Impacto de los eventos globales: Marzo de 2020 marcó un punto de inflexión, con un aumento significativo en el consumo musical durante el confinamiento. Este fenómeno muestra cómo la música puede ser un refugio emocional en momentos de incertidumbre.
+    Artistas más consistentes: BTS, Bad Bunny y Justin Bieber no solo son nombres destacados, sino que su presencia constante refleja una fidelidad de sus fans y su impacto cultural sostenido.
+    Mora como fenómeno reciente: A pesar de que Spotify Wrapped lo destacó en 2024, el análisis muestra que Mora empezó a ser relevante en 2023, consolidándose gracias a su exitoso álbum "La Reina de la Noche". Esto evidencia cómo las tendencias pueden cambiar rápidamente, pero la consistencia sigue siendo clave.
+    El peso de los números: Transformar minutos en días escuchados pone en perspectiva el impacto que los artistas tienen en nuestras vidas. BTS, con casi 51 días de reproducción, simboliza una conexión profunda y significativa para la usuaria analizada.
+    Más allá del análisis original: Si bien este proyecto se enfoca en tendencias longitudinales, hay muchas posibilidades de enriquecer el análisis con otros gráficos e indicadores. Algunas ideas incluyen:
+
+    Análisis por géneros musicales: ¿Cuáles son los géneros más dominantes en diferentes etapas de la vida de la usuaria?
+    Relevancia de álbumes: ¿Qué álbumes dejaron una huella más profunda a lo largo de los años?
+    Colaboraciones entre artistas: ¿Cómo influyen los dúos o colaboraciones en las tendencias de escucha?
+    Estacionalidad en los hábitos musicales: Identificar patrones asociados a temporadas como verano o invierno. """)
 
 except Exception as e:
     st.error(f"Hubo un problema al procesar los datos: {e}")
