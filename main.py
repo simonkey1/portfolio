@@ -88,8 +88,7 @@ try:
     # Sección: Top 15 Excluyendo BTS
     st.header("🎶 Top 15 Artistas Excluyendo BTS")
     st.markdown("""
-    Excluyendo a BTS, exploramos los 15 artistas más reproducidos entre 2017 y 2024. 
-    Visualiza cómo evolucionaron sus reproducciones a lo largo del tiempo.
+    Ya que BTS es el artista más escuchado, también es el más problemático para el análisis de otros artistas. Su popularidad empeora la legibilidad de la visualización. Por lo que decidí excluir a BTS de la visualización para poder observar a otros artistas con mayor claridad. y... Sorpresa! no está ni en el top 15 de artistas más escuchados Mora. ¿Qué pasó con Mora? ¿Por qué no está en el top 15? Bueno, Mora es un artista relativamente nuevo, y nuestra amiga empezó a escucharlo notoriamente desde 2023, por lo que sí, es popular, pero no puede denominarse un artista consistente.
     """)
     top_artists_df = get_consistent_artists_with_playtime_excluding_bts(df, top_n=15)
     top_artists = top_artists_df['artist'].tolist()
@@ -97,15 +96,27 @@ try:
     st.plotly_chart(fig, use_container_width=True)
 
     # Sección: Análisis Exclusivo de BTS
-    st.header("💜 Análisis de BTS")
+    st.header("Dato curioso")
     st.markdown("""
-    Analizamos cómo evolucionaron las reproducciones de BTS durante el periodo. 
-    Sus lanzamientos como 'Dynamite' impulsaron picos importantes.
+    Transformar los minutos escuchados de un artista a días nos da una métrica interesante. Nos damos cuenta que en estos 7 años, ¡BTS ha sido escuchado por un total de casi 51 días! ¿Qué significa esto? Bueno, si escuchamos a BTS por 51 días seguidos, estaríamos escuchando a BTS desde el 1 de enero hasta el 20 de febrero. O si leyeras un libro de 300 páginas en 1 hora, podrías leer 122 libros en 51 días. ¡Impresionante!
+                
+    Otra métrica es el uso general de la aplicación. En estos 7 años, nuestra amiga ha utilizado Spotify por un total de 326 días. Si escuchamos a BTS por 51 días, entonces el resto de los días ha sido utilizado para escuchar a otros artistas. ¿Qué significa esto? Que BTS es un artista muy importante en la vida de nuestra amiga, pero no el único. En la siguiente sección podremos explorar nosotros mismos el artista que queramos en el año que queramos y ver las 5 canciones más escuchadas. Si observamos menos de 5 es porque no está registrado que haya escuchado 5 canciones diferentes de ese artista en ese año.
     """)
-    bts_days = get_bts_playtime_in_days(data_filepath)
-    st.metric(label="🎧 Total de Días Reproducidos por BTS", value=f"{bts_days} días")
+
     bts_fig = create_bts_playtime_chart(data_filepath)
     st.plotly_chart(bts_fig, use_container_width=True)
+
+    bts_days = get_bts_playtime_in_days(data_filepath)
+    st.metric(label="🎧 Total de Días Reproducidos por BTS", value=f"{bts_days} días")
+
+    total_days = get_total_playtime_in_days(df)
+    st.metric(label="🎧 Total de Días de Reproducción", value=f"{total_days} días")
+    top_artists_df = get_consistent_artists_with_playtime(df, top_n=3)
+    top_artists = top_artists_df['artist'].tolist()
+
+    
+
+   
 
     # Sección: Top 5 Canciones por Artista y Año
     st.header("🎵 Top 5 Canciones por Artista y Año")
