@@ -94,7 +94,7 @@ try:
     st.plotly_chart(fig, use_container_width=True)
 
     # Sección: Análisis Exclusivo de BTS
-    st.header("Dato curioso")
+    st.header("Hablemos de Datos 🤓")
     st.markdown("""
     Transformar los minutos escuchados de un artista a días nos da una métrica interesante. Nos damos cuenta que en estos 7 años, ¡BTS ha sido escuchado por un total de casi 51 días! ¿Qué significa esto? Bueno, si escuchamos a BTS por 51 días seguidos, estaríamos escuchando a BTS desde el 1 de enero hasta el 20 de febrero. O si leyeras un libro de 300 páginas en 1 hora, podrías leer 122 libros en 51 días. ¡Impresionante!
                 
@@ -119,16 +119,28 @@ try:
     # Sección: Top 5 Canciones por Artista y Año
     st.header("🎵 Top 5 Canciones por Artista y Año")
     st.markdown("""
-    Selecciona un artista y un año para explorar las cinco canciones más populares basadas en minutos reproducidos.
+    Más allá de los artistas consistentes, podemos averiguar su top 5 de canciones más escuchadas independiente del artista. Anteriormente hablamos de Mora, a través de esto nos damos cuenta que el 2023 fue cuando empezó a subir sustancialmente sus minutos escuchados, por eso no está figurado como artista consistente. Spotify lo destaca el 2024, porque respecto al año anterior subió 291% en minutos escuchados. ¿Qué pasó en 2023? Bueno, Mora lanzó su álbum "La Reina de la Noche", el cual fue bastante exitoso y se ha logrado mantener arriba, veremos si esta tendencia a la subida se mantiene este 2025.
     """)
-    search_query = st.text_input("Busca un Artista")
+    default_artist = "Mora"
+    default_year = 2023
+
+    # Búsqueda y selección de artista
+    search_query = st.text_input("Busca un Artista", value=default_artist)  # Valor inicial como "Mora"
     artists = sorted(track_data['artist'].dropna().unique())
     filtered_artists = [a for a in artists if search_query.lower() in a.lower()]
-    artist = st.selectbox("Selecciona el Artista", filtered_artists)
-    year = st.selectbox("Selecciona el Año", sorted(track_data['year'].unique()))
+    artist_index = 0 if default_artist in filtered_artists else None  # Seleccionar Mora si está en la lista
+    artist = st.selectbox("Selecciona el Artista", filtered_artists, index=artist_index)
+
+    # Selección de año
+    years = sorted(track_data['year'].unique())
+    year_index = years.index(default_year) if default_year in years else 0  # Seleccionar 2023 si está disponible
+    year = st.selectbox("Selecciona el Año", years, index=year_index)
+
+    # Generar gráfico si hay artista y año seleccionados
     if artist and year:
-        fig = create_track_chart(data_filepath, year, artist)
-        st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f"### Top 5 Canciones de {artist} en {year}")
+    fig = create_track_chart(data_filepath, year, artist)
+    st.plotly_chart(fig, use_container_width=True)
 
 except Exception as e:
     st.error(f"Hubo un problema al procesar los datos: {e}")
