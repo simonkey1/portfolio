@@ -58,7 +58,11 @@ try:
 
     # Sección: Minutos Totales por Año
 
-   
+    top_artists_df = get_consistent_artists_with_playtime(df, top_n=3)
+    top_artists = top_artists_df['artist'].tolist()
+    
+
+    st.header("📊 Minutos Totales por Año")
     st.markdown("""
     Primero empecé con sus minutos escuchados por años, con resultados muy interesantes. El marzo de 2020, se inició la pandemia, un proceso que afectó los hábitos de escucha de música de muchas personas, incluyendo a mi amiga. Notamos que tuvo un pico impresionante de minutos al día durante marzo. Sin embargo, luego vemos un declive en los meses siguientes, ocasionando que en septiembre del mismo año se escuche menos música que en 2019. Ante esto, le pregunté a mi amiga si había notado este cambio, a lo que respondió que sí, que en efecto, utilizó muchísimo Spotify al inicio de la pandemia, pero a medida que avanzaron los meses, optó por escuchar lofi en Youtube para dedicarse principalmente al estudio, lo cual se refleja en la gráfica.
     """)
