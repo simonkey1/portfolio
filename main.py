@@ -43,7 +43,7 @@ add_background_gradient()
 # Título principal
 st.title("🎵 Spotify Wrapped: Análisis Longitudinal de Datos")
 st.markdown("""
-Todos los años desde 2015 Spotify Wrapped nos permite ver nuestros datos de escucha. Pero hay ocasiones donde no nos sentimos tan identificados con sus resultados. El año pasado, una amiga me comentó que no estaba satisfecha son su Spotify Wrapped, que no sentía que reflejara sus gustos musicales. Así que me embarqué en la idea de hacer mi propio Spotify Wrapped, ¿la diferencia? !Con datos de más de 8 años!. Quise observar sus patrones de escucha de manera más holgada que un Spotify Wrapped anual. El siguiente análisis es el resultado de mi experimento.
+Todos los años desde 2015 Spotify Wrapped nos permite ver nuestros datos de escucha. Pero hay ocasiones donde no nos sentimos tan identificados con sus resultados. El año pasado, una amiga me comentó que no estaba satisfecha son su Spotify Wrapped, que no sentía que reflejara sus gustos musicales. Así que me embarqué en la idea de hacer mi propio Spotify Wrapped, ¿la diferencia? !Con datos de más de 8 años!. Quise observar sus patrones de escucha de manera más holgada que un Spotify Wrapped anual. El siguiente análisis es el resultado de mi investigación. ¡Espero que lo disfruten!
 """)
 
 # Ruta al archivo de datos
